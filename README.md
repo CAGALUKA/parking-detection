@@ -1,20 +1,56 @@
-# Parking Empty Places Detection
+# Parking Detection System
 
-Detect empty parking spaces using a custom YOLOv8 model trained on a specialized dataset, with image manipulation handled by OpenCV.
+## Proje Açıklaması
 
-This repository provides a comprehensive solution for detecting vacant parking spots in real-time. Leveraging advanced computer vision techniques, the system accurately identifies empty parking spaces, contributing to improved efficiency and convenience in parking management.
+Bu proje, YOLOv8 kullanarak otoparktaki araçları tespit eder ve park yerlerinin dolu/boş durumunu belirler.
 
-## Features
+---
 
-- Custom YOLOv8 model trained on a dedicated dataset
-- Real-time processing capabilities
-- Integration with OpenCV for image manipulation
-- Modular design for easy adaptation to different parking environments
+## Kurulum
 
-## Usage
+1. Projeyi klonla:
+   git clone <repo_link>
 
-To use this system, follow these steps:
-1. Clone the repository.
-2. Install the required dependencies.
-3. Run the main script to start detecting empty parking spaces.
+2. Proje klasörüne gir:
+   cd Parking-empty_places_detection
 
+3. Gerekli paketleri yükle:
+   pip install -r requirements.txt
+
+---
+
+## Çalıştırma
+
+python main.py
+
+---
+
+## Backend Ekibi
+
+* Araç tespiti (YOLO)
+* Park alanı kontrolü
+* API geliştirme (sonradan eklenecek)
+
+---
+
+## Frontend Ekibi
+
+* Android uygulama geliştirme
+* API’den veri çekme
+* UI tasarımı (park yerleri)
+
+---
+
+## Notlar
+
+* requirements.txt tüm bağımlılıkları içerir
+* .venv klasörü GitHub’a yüklenmez
+* Backend ve frontend aynı ağda çalışacaktır (ilk aşama)
+
+---
+
+## Geliştirme Planı
+
+* [ ] Backend API oluşturma
+* [ ] Mobil uygulama bağlantısı
+* [ ] Gerçek zamanlı veri güncelleme
