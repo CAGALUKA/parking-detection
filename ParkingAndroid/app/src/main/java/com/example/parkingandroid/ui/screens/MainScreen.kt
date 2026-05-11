@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.parkingandroid.data.model.ParkingSpot
+import com.example.parkingandroid.data.model.SpotStatus
 
 @Composable
 fun MainScreen(spots: List<ParkingSpot>, onSpotClick: (Int) -> Unit) {
@@ -32,15 +33,17 @@ fun MainScreen(spots: List<ParkingSpot>, onSpotClick: (Int) -> Unit) {
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            val fullCount = spots.count { it.isFull }
-            val emptyCount = spots.size - fullCount
+            val occupiedCount = spots.count { it.status == SpotStatus.OCCUPIED }
+            val availableCount = spots.count { it.status == SpotStatus.AVAILABLE }
+            val reservedCount = spots.count { it.status == SpotStatus.RESERVED }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                StatusCard("Dolu", fullCount, MaterialTheme.colorScheme.error, Modifier.weight(1f))
-                StatusCard("Boş", emptyCount, Color(0xFF4CAF50), Modifier.weight(1f))
+                StatusCard("Dolu", occupiedCount, MaterialTheme.colorScheme.error, Modifier.weight(1f))
+                StatusCard("Boş", availableCount, Color(0xFF4CAF50), Modifier.weight(1f))
+                StatusCard("Rezerve", reservedCount, Color(0xFFFFC107), Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -75,12 +78,16 @@ fun MainScreen(spots: List<ParkingSpot>, onSpotClick: (Int) -> Unit) {
 
 @Composable
 fun SpotItem(spot: ParkingSpot, onSpotClick: (Int) -> Unit) {
-    val backgroundColor = if (spot.isFull) MaterialTheme.colorScheme.error else Color(0xFF4CAF50)
+    val backgroundColor = when (spot.status) {
+        SpotStatus.OCCUPIED -> MaterialTheme.colorScheme.error
+        SpotStatus.RESERVED -> Color(0xFFFFC107) // Sarı
+        SpotStatus.AVAILABLE -> Color(0xFF4CAF50) // Yeşil
+    }
     
     Card(
         modifier = Modifier
             .aspectRatio(1f)
-            .clickable { if (!spot.isFull) onSpotClick(spot.id) },
+            .clickable { if (spot.status == SpotStatus.AVAILABLE) onSpotClick(spot.id) },
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -94,7 +101,11 @@ fun SpotItem(spot: ParkingSpot, onSpotClick: (Int) -> Unit) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = if (spot.isFull) "DOLU" else "BOŞ",
+                    text = when(spot.status) {
+                        SpotStatus.OCCUPIED -> "DOLU"
+                        SpotStatus.RESERVED -> "REZERVE"
+                        SpotStatus.AVAILABLE -> "BOŞ"
+                    },
                     color = Color.White.copy(alpha = 0.9f),
                     style = MaterialTheme.typography.labelSmall
                 )
@@ -112,17 +123,17 @@ fun StatusCard(label: String, count: Int, color: Color, modifier: Modifier = Mod
         border = CardDefaults.outlinedCardBorder()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 label, 
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 count.toString(), 
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.displayMedium,
                 color = color
             )
         }

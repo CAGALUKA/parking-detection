@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.parkingandroid.ui.screens.*
 import com.example.parkingandroid.ui.theme.ParkingAndroidTheme
 import com.example.parkingandroid.ui.viewmodel.AuthViewModel
@@ -29,6 +31,7 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     object Map : Screen("map", "Otopark", Icons.Default.Place)
     object Profile : Screen("profile", "Profil", Icons.Default.Person)
     object Login : Screen("login", "Giriş", Icons.Default.Person)
+    object Reservation : Screen("reservation/{spotId}", "Rezervasyon", Icons.Default.Place)
 }
 
 class MainActivity : ComponentActivity() {
@@ -46,7 +49,6 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
-                // Alt barı sadece ana uygulama ekranlarında göster
                 val showBottomBar = currentDestination?.route in listOf(Screen.Home.route, Screen.Map.route, Screen.Profile.route)
 
                 Scaffold(
@@ -107,8 +109,25 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.Map.route) { 
                             MainScreen(
                                 spots = spots,
-                                onSpotClick = { spotId -> parkingViewModel.reserveSpot(spotId) }
+                                onSpotClick = { spotId -> 
+                                    parkingViewModel.reserveSpot(spotId)
+                                    navController.navigate("reservation/$spotId")
+                                }
                             ) 
+                        }
+                        composable(
+                            route = Screen.Reservation.route,
+                            arguments = listOf(navArgument("spotId") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val spotId = backStackEntry.arguments?.getInt("spotId") ?: 0
+                            ReservationStatusScreen(
+                                spotId = spotId,
+                                onBackToMap = {
+                                    navController.navigate(Screen.Map.route) {
+                                        popUpTo(Screen.Map.route) { inclusive = true }
+                                    }
+                                }
+                            )
                         }
                         composable(Screen.Profile.route) { 
                             ProfileScreen(onLogout = {
