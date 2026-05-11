@@ -1,0 +1,33 @@
+package com.example.parkingandroid.ui.theme
+
+import androidx.compose.ui.graphics.Color
+
+// Light Theme Colors (Derived from your CSS)
+val LightBackground = Color(0xFFFFFFFF)
+val LightForeground = Color(0xFF252525) // oklch(0.145 0 0)
+val LightPrimary = Color(0xFF030213)
+val LightOnPrimary = Color(0xFFFFFFFF)
+val LightSecondary = Color(0xFFF1F5F9) // oklch(0.95 0.0058 264.53)
+val LightOnSecondary = Color(0xFF030213)
+val LightMuted = Color(0xFFECECF0)
+val LightMutedForeground = Color(0xFF717182)
+val LightAccent = Color(0xFFE9EBEF)
+val LightAccentForeground = Color(0xFF030213)
+val LightDestructive = Color(0xFFD4183D)
+val LightOnDestructive = Color(0xFFFFFFFF)
+val LightBorder = Color(0x1A000000) // rgba(0, 0, 0, 0.1)
+
+// Dark Theme Colors (Derived from your CSS)
+val DarkBackground = Color(0xFF252525) // oklch(0.145 0 0)
+val DarkForeground = Color(0xFFFAFAFA) // oklch(0.985 0 0)
+val DarkPrimary = Color(0xFFFAFAFA)
+val DarkOnPrimary = Color(0xFF343434) // oklch(0.205 0 0)
+val DarkSecondary = Color(0xFF404040) // oklch(0.269 0 0)
+val DarkOnSecondary = Color(0xFFFAFAFA)
+val DarkMuted = Color(0xFF404040)
+val DarkMutedForeground = Color(0xFFB3B3B3) // oklch(0.708 0 0)
+val DarkAccent = Color(0xFF404040)
+val DarkAccentForeground = Color(0xFFFAFAFA)
+val DarkDestructive = Color(0xFF7F1D1D) // oklch(0.396 0.141 25.723)
+val DarkOnDestructive = Color(0xFFFAFAFA)
+val DarkBorder = Color(0xFF404040)
