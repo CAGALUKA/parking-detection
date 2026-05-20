@@ -4,9 +4,13 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,7 +28,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun ReservationStatusScreen(
     spotId: Int,
-    onBackToMap: () -> Unit
+    onBackToMap: () -> Unit,
+    onConfirmArrival: () -> Unit = {}
 ) {
     var secondsLeft by remember { mutableStateOf(15 * 60) }
 
@@ -38,139 +43,304 @@ fun ReservationStatusScreen(
     val minutes = secondsLeft / 60
     val seconds = secondsLeft % 60
     val timerText = "%02d:%02d".format(minutes, seconds)
+    val reservationCode = "0000"
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF4F6FA))
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(43.dp)
+                .background(Color(0xFFFF4B00)),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Text(
+                text = "Reservation Confirmation & Status",
+                color = Color.White,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 22.dp)
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            Box(
+            Column(
                 modifier = Modifier
-                    .size(100.dp)
-                    .background(Color(0xFFD9FBE4), CircleShape),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .shadow(9.dp, RoundedCornerShape(14.dp))
+                    .background(Color.White, RoundedCornerShape(14.dp))
+                    .padding(horizontal = 22.dp, vertical = 22.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CheckIcon()
-            }
+                Box(
+                    modifier = Modifier
+                        .size(74.dp)
+                        .background(Color(0xFFD9FBE4), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CheckIcon()
+                }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-            Text(
-                text = "Rezervasyon Onaylandı!",
-                style = MaterialTheme.typography.displayMedium,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    text = "Booking Confirmed!",
+                    color = Color(0xFF081B3A),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
 
-            Text(
-                text = "Park yeriniz sizin için ayrıldı.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
+                Spacer(modifier = Modifier.height(6.dp))
 
-            Spacer(modifier = Modifier.height(40.dp))
+                Text(
+                    text = "Your parking spot is reserved",
+                    color = Color(0xFF344054),
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center
+                )
 
-            InfoCard(label = "Park No", value = "#$spotId")
-            Spacer(modifier = Modifier.height(16.dp))
-            InfoCard(label = "Kat", value = "Zemin Kat")
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+                InfoRow(label = "Spot Number", value = "B$spotId")
 
-            // Timer Bölümü
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
-                color = Color(0xFFFFF7ED),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFB878))
-            ) {
+                Spacer(modifier = Modifier.height(12.dp))
+
+                InfoRow(label = "Floor", value = "Level 1")
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                InfoRow(label = "Status", value = "Reserved")
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Column(
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.5.dp,
+                            color = Color(0xFFFFB878),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .background(Color(0xFFFFF7ED), RoundedCornerShape(12.dp))
+                        .padding(vertical = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         ClockIcon()
-                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
                         Text(
-                            text = "Kalan Süre",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = Color(0xFF8C2400)
+                            text = "Reservation Timer",
+                            color = Color(0xFF8C2400),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
 
-                    Text(
-                        text = timerText,
-                        style = MaterialTheme.typography.displayLarge.copy(fontSize = 48.sp),
-                        color = Color(0xFFFF4A00)
-                    )
+                    Spacer(modifier = Modifier.height(9.dp))
 
                     Text(
-                        text = "Lütfen süre dolmadan alana giriş yapın",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFFFF4A00).copy(alpha = 0.8f)
+                        text = timerText,
+                        color = Color(0xFFFF4B00),
+                        fontSize = 33.sp,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+
+                    Spacer(modifier = Modifier.height(3.dp))
+
+                    Text(
+                        text = "Time remaining to arrive",
+                        color = Color(0xFFFF4B00),
+                        fontSize = 13.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFF8FAFF), RoundedCornerShape(12.dp))
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFFE2E8F0),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(vertical = 14.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Reservation Code",
+                        color = Color(0xFF667085),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    Text(
+                        text = reservationCode,
+                        color = Color(0xFF081B3A),
+                        fontSize = 31.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 5.sp
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "Enter this code when your car arrives.",
+                        color = Color(0xFF98A2B3),
+                        fontSize = 12.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                Button(
+                    onClick = onConfirmArrival,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFE53935),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Confirm Vehicle Arrival",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Button(
+                    onClick = onBackToMap,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF1F5EFF),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Back to Parking Lot",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = onBackToMap,
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                shape = MaterialTheme.shapes.medium
+                    .padding(horizontal = 24.dp)
+                    .background(Color(0xFF03A94D), RoundedCornerShape(12.dp))
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.Top
             ) {
-                Text("Haritaya Dön", style = MaterialTheme.typography.labelLarge)
+                Box(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .size(10.dp)
+                        .background(Color.White, CircleShape)
+                )
+
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Column {
+                    Text(
+                        text = "Push Notification",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = "Spot B$spotId confirmed. Your code is $reservationCode.",
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        lineHeight = 19.sp
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun InfoCard(label: String, value: String) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+private fun InfoRow(
+    label: String,
+    value: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(54.dp)
+            .background(Color(0xFFF8F9FB), RoundedCornerShape(10.dp))
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(label, style = MaterialTheme.typography.bodyLarge)
-            Text(value, style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.primary)
-        }
+        Text(
+            text = label,
+            color = Color(0xFF344054),
+            fontSize = 15.sp,
+            modifier = Modifier.weight(1f)
+        )
+
+        Text(
+            text = value,
+            color = Color(0xFF081B3A),
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
 @Composable
 private fun CheckIcon() {
-    Canvas(modifier = Modifier.size(56.dp)) {
+    Canvas(modifier = Modifier.size(48.dp)) {
         drawCircle(
             color = Color(0xFF08A84D),
-            radius = size.minDimension / 2.5f,
+            radius = size.minDimension / 2.6f,
             style = Stroke(width = 4.dp.toPx())
         )
+
         drawLine(
             color = Color(0xFF08A84D),
-            start = Offset(size.width * 0.3f, size.height * 0.5f),
-            end = Offset(size.width * 0.45f, size.height * 0.65f),
+            start = Offset(size.width * 0.28f, size.height * 0.52f),
+            end = Offset(size.width * 0.44f, size.height * 0.68f),
             strokeWidth = 4.dp.toPx(),
             cap = StrokeCap.Round
         )
+
         drawLine(
             color = Color(0xFF08A84D),
-            start = Offset(size.width * 0.45f, size.height * 0.65f),
-            end = Offset(size.width * 0.7f, size.height * 0.35f),
+            start = Offset(size.width * 0.44f, size.height * 0.68f),
+            end = Offset(size.width * 0.76f, size.height * 0.34f),
             strokeWidth = 4.dp.toPx(),
             cap = StrokeCap.Round
         )
@@ -179,23 +349,25 @@ private fun CheckIcon() {
 
 @Composable
 private fun ClockIcon() {
-    Canvas(modifier = Modifier.size(24.dp)) {
+    Canvas(modifier = Modifier.size(23.dp)) {
         drawCircle(
-            color = Color(0xFFFF4A00),
-            radius = size.minDimension / 2.2f,
+            color = Color(0xFFFF4B00),
+            radius = size.minDimension / 2.3f,
             style = Stroke(width = 2.dp.toPx())
         )
+
         drawLine(
-            color = Color(0xFFFF4A00),
+            color = Color(0xFFFF4B00),
             start = Offset(size.width / 2f, size.height / 2f),
-            end = Offset(size.width / 2f, size.height * 0.3f),
+            end = Offset(size.width / 2f, size.height * 0.30f),
             strokeWidth = 2.dp.toPx(),
             cap = StrokeCap.Round
         )
+
         drawLine(
-            color = Color(0xFFFF4A00),
+            color = Color(0xFFFF4B00),
             start = Offset(size.width / 2f, size.height / 2f),
-            end = Offset(size.width * 0.7f, size.height * 0.6f),
+            end = Offset(size.width * 0.67f, size.height * 0.60f),
             strokeWidth = 2.dp.toPx(),
             cap = StrokeCap.Round
         )

@@ -1,12 +1,24 @@
 package com.example.parkingandroid.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -18,107 +30,174 @@ fun LoginScreen(onLoginSuccess: (String, String) -> Boolean) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = Color(0xFFF4F6FA)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(horizontal = 26.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Giriş Yap",
-                style = MaterialTheme.typography.displayLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            
-            Text(
-                text = "Devam etmek için hesabınıza giriş yapın.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it; showError = false },
-                label = { Text("E-posta") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it; showError = false },
-                label = { Text("Şifre") },
-                visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                )
-            )
-
-            if (showError) {
+            Box(
+                modifier = Modifier
+                    .size(78.dp)
+                    .background(Color(0xFFE8F1FF), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
-                    text = "Hatalı e-posta veya şifre!",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 8.dp)
+                    text = "P",
+                    color = Color(0xFF1F5EFF),
+                    fontSize = 38.sp,
+                    fontWeight = FontWeight.ExtraBold
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
-            Button(
-                onClick = {
-                    val success = onLoginSuccess(email, password)
-                    if (!success) showError = true
-                },
+            Text(
+                text = "Welcome Back",
+                color = Color(0xFF081B3A),
+                fontSize = 31.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+
+            Spacer(modifier = Modifier.height(7.dp))
+
+            Text(
+                text = "Login to reserve your parking spot quickly.",
+                color = Color(0xFF667085),
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                shape = MaterialTheme.shapes.medium,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                    .shadow(8.dp, RoundedCornerShape(18.dp))
+                    .background(Color.White, RoundedCornerShape(18.dp))
+                    .padding(22.dp)
             ) {
-                Text("Giriş Yap", style = MaterialTheme.typography.labelLarge)
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            TextButton(onClick = { /* Kayıt Ol */ }) {
                 Text(
-                    "Hesabın yok mu? Kayıt Ol",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Medium
+                    text = "Email",
+                    color = Color(0xFF172B4D),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = {
+                        email = it
+                        showError = false
+                    },
+                    placeholder = { Text("kullanici@example.com") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF1F5EFF),
+                        unfocusedBorderColor = Color(0xFFE0E4EC),
+                        focusedContainerColor = Color(0xFFF9FAFB),
+                        unfocusedContainerColor = Color(0xFFF9FAFB)
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Password",
+                    color = Color(0xFF172B4D),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        showError = false
+                    },
+                    placeholder = { Text("123456") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFF1F5EFF),
+                        unfocusedBorderColor = Color(0xFFE0E4EC),
+                        focusedContainerColor = Color(0xFFF9FAFB),
+                        unfocusedContainerColor = Color(0xFFF9FAFB)
+                    )
+                )
+
+                if (showError) {
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Text(
+                        text = "Wrong email or password!",
+                        color = Color(0xFFE53935),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        val success = onLoginSuccess(email, password)
+                        if (!success) showError = true
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(58.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF1F5EFF),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Login",
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                TextButton(
+                    onClick = { },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "Don’t have an account? Register",
+                        color = Color(0xFF1F5EFF),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Surface(
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                shape = MaterialTheme.shapes.small,
-                modifier = Modifier.padding(top = 16.dp)
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            Box(
+                modifier = Modifier
+                    .background(Color(0xFFFFF1E8), RoundedCornerShape(50.dp))
+                    .padding(horizontal = 15.dp, vertical = 8.dp)
             ) {
                 Text(
                     text = "Demo: kullanici@example.com / 123456",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    color = Color(0xFFFF4B00),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
                 )
             }
         }
