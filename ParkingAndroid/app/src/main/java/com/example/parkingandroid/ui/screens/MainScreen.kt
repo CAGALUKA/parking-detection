@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
@@ -44,6 +46,7 @@ fun MainScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 16.dp)
         ) {
             Text(
@@ -143,7 +146,7 @@ fun MainScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .height(450.dp),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF2D3748)),
                 elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
@@ -269,7 +272,7 @@ private fun ParkingCarItem(
         SpotStatus.OCCUPIED -> Color(0xFFE53935)
     }
 
-    val clickable = spot.status == SpotStatus.AVAILABLE && !hasActiveReservation
+    val clickable = (spot.status == SpotStatus.AVAILABLE && !hasActiveReservation) || isCurrentReservation
 
     Column(
         modifier = modifier

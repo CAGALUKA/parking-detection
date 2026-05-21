@@ -105,14 +105,28 @@ class MainActivity : ComponentActivity() {
                                 success
                             })
                         }
-                        composable(Screen.Home.route) { HomeScreen() }
-                        composable(Screen.Map.route) { 
-                            MainScreen(
-                                spots = spots,
-                                onSpotClick = { spotId -> 
-                                    parkingViewModel.reserveSpot(spotId)
-                                    navController.navigate("reservation/$spotId")
+                        composable(Screen.Home.route) { 
+                            HomeScreen(
+                                onShowParkingClick = {
+                                    navController.navigate(Screen.Map.route)
                                 }
+                            )
+                        }
+                        composable(Screen.Map.route) { 
+                            val activeReservationSpotId by parkingViewModel.activeReservationSpotId.collectAsState()
+                            val spotsState by parkingViewModel.spots.collectAsState()
+                            MainScreen(
+                                spots = spotsState,
+                                onSpotClick = { spotId -> 
+                                    if (activeReservationSpotId == spotId) {
+                                        navController.navigate("reservation/$spotId")
+                                    } else {
+                                        parkingViewModel.reserveSpot(spotId)
+                                        navController.navigate("reservation/$spotId")
+                                    }
+                                },
+                                hasActiveReservation = activeReservationSpotId != null,
+                                currentReservationSpotId = activeReservationSpotId
                             ) 
                         }
                         composable(
@@ -120,22 +134,32 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(navArgument("spotId") { type = NavType.IntType })
                         ) { backStackEntry ->
                             val spotId = backStackEntry.arguments?.getInt("spotId") ?: 0
+                            val remainingSeconds by parkingViewModel.remainingSeconds.collectAsState()
+                            
                             ReservationStatusScreen(
                                 spotId = spotId,
+                                remainingSeconds = remainingSeconds,
                                 onBackToMap = {
                                     navController.navigate(Screen.Map.route) {
                                         popUpTo(Screen.Map.route) { inclusive = true }
                                     }
+                                },
+                                onConfirmArrival = {
+                                    parkingViewModel.confirmArrival()
                                 }
                             )
                         }
                         composable(Screen.Profile.route) { 
-                            ProfileScreen(onLogout = {
-                                authViewModel.logout()
-                                navController.navigate(Screen.Login.route) {
-                                    popUpTo(0) { inclusive = true }
-                                }
-                            }) 
+                            val activeReservationSpotId by parkingViewModel.activeReservationSpotId.collectAsState()
+                            ProfileScreen(
+                                onLogout = {
+                                    authViewModel.logout()
+                                    navController.navigate(Screen.Login.route) {
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                },
+                                activeReservationSpot = activeReservationSpotId?.let { "B$it" }
+                            )
                         }
                     }
                 }

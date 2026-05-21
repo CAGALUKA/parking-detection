@@ -28,22 +28,13 @@ import kotlinx.coroutines.delay
 @Composable
 fun ReservationStatusScreen(
     spotId: Int,
+    remainingSeconds: Int,
     onBackToMap: () -> Unit,
     onConfirmArrival: () -> Unit = {}
 ) {
-    var secondsLeft by remember { mutableStateOf(15 * 60) }
-
-    LaunchedEffect(Unit) {
-        while (secondsLeft > 0) {
-            delay(1000)
-            secondsLeft--
-        }
-    }
-
-    val minutes = secondsLeft / 60
-    val seconds = secondsLeft % 60
+    val minutes = remainingSeconds / 60
+    val seconds = remainingSeconds % 60
     val timerText = "%02d:%02d".format(minutes, seconds)
-    val reservationCode = "0000"
 
     Column(
         modifier = Modifier
@@ -169,50 +160,13 @@ fun ReservationStatusScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFFF8FAFF), RoundedCornerShape(12.dp))
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xFFE2E8F0),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .padding(vertical = 14.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Reservation Code",
-                        color = Color(0xFF667085),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Text(
-                        text = reservationCode,
-                        color = Color(0xFF081B3A),
-                        fontSize = 31.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 5.sp
-                    )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        text = "Enter this code when your car arrives.",
-                        color = Color(0xFF98A2B3),
-                        fontSize = 12.sp
-                    )
-                }
-
                 Spacer(modifier = Modifier.height(18.dp))
 
                 Button(
-                    onClick = onConfirmArrival,
+                    onClick = {
+                        onConfirmArrival()
+                        onBackToMap()
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -280,7 +234,7 @@ fun ReservationStatusScreen(
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Text(
-                        text = "Spot B$spotId confirmed. Your code is $reservationCode.",
+                        text = "Spot B$spotId confirmed. Welcome to our parking lot!",
                         color = Color.White,
                         fontSize = 14.sp,
                         lineHeight = 19.sp

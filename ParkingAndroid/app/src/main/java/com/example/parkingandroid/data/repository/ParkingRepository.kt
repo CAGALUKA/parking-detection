@@ -20,11 +20,22 @@ class ParkingRepository {
     fun getParkingStatus(): Flow<List<ParkingSpot>> = _spots
 
     fun reserveSpot(id: Int) {
+        updateSpotStatus(id, SpotStatus.RESERVED)
+    }
+
+    fun occupySpot(id: Int) {
+        updateSpotStatus(id, SpotStatus.OCCUPIED)
+    }
+
+    fun releaseSpot(id: Int) {
+        updateSpotStatus(id, SpotStatus.AVAILABLE)
+    }
+
+    private fun updateSpotStatus(id: Int, status: SpotStatus) {
         val currentList = _spots.value.toMutableList()
         val index = currentList.indexOfFirst { it.id == id }
-        if (index != -1 && currentList[index].status == SpotStatus.AVAILABLE) {
-            // Rezerve edilen yer SARI (RESERVED) olacak
-            currentList[index] = currentList[index].copy(status = SpotStatus.RESERVED)
+        if (index != -1) {
+            currentList[index] = currentList[index].copy(status = status)
             _spots.value = currentList
         }
     }
