@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.parkingandroid.data.model.ParkingSpot
 import com.example.parkingandroid.data.repository.ParkingRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,9 +24,22 @@ class ParkingViewModel : ViewModel() {
     private var timerJob: kotlinx.coroutines.Job? = null
 
     init {
+        // 1. Repository'deki yerel park durumu değişikliklerini dinle
         viewModelScope.launch {
             repository.getParkingStatus().collect {
                 _spots.value = it
+            }
+        }
+
+        // 2. Arka planda Backend'den gelen canlı video/tespit akışını (Stream) başlat
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.streamFromBackend("demo1.mp4", 15f).collect { result ->
+                    repository.updateSpotsFromDetection(result)
+                }
+            } catch (e: Exception) {
+                // Uygulamanın çökmesini engeller ve hatayı Logcat'e yazar
+                android.util.Log.e("PARKING_ERROR", "Backend baglanti hatasi!", e)
             }
         }
     }
