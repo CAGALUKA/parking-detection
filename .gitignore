@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+*.pt          # model ağırlıkları (büyük dosya)
+backend/uploads/
+backend/outputs/
+detection/videos/
+*.mp4
+*.avi
+*.mov
+.DS_Store
